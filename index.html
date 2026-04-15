@@ -23,6 +23,9 @@
   <!-- ══════════════════ NAVIGATION ══════════════════ -->
   <nav class="nav" id="navbar">
     <a href="#home" class="nav__logo">&lt;JRD /&gt;</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light mode" title="Toggle light / dark mode">
+      <i class="fas fa-sun" id="themeIcon"></i>
+    </button>
     <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
       <span></span>
       <span></span>
@@ -162,6 +165,15 @@
           </div>
         </div>
         <div class="skills-cat">
+          <h3><i class="fas fa-mobile-alt"></i> Mobile</h3>
+          <div class="tags">
+            <span class="tag tag--dart">Flutter</span>
+            <span class="tag tag--dart">Dart</span>
+            <span class="tag">Android</span>
+            <span class="tag">SQLite</span>
+          </div>
+        </div>
+        <div class="skills-cat">
           <h3><i class="fas fa-database"></i> Databases</h3>
           <div class="tags">
             <span class="tag">PostgreSQL</span>
@@ -215,6 +227,15 @@
           </div>
           <div class="skill-bar__track">
             <div class="skill-bar__fill" data-width="80"></div>
+          </div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar__header">
+            <span>Flutter / Dart (Mobile)</span>
+            <span class="skill-bar__pct">72%</span>
+          </div>
+          <div class="skill-bar__track">
+            <div class="skill-bar__fill" data-width="72"></div>
           </div>
         </div>
         <div class="skill-bar">
@@ -356,6 +377,30 @@
             </ul>
             <span class="project-card__lang">
               <span class="lang-dot" style="background:#3178c6;"></span> TypeScript
+            </span>
+          </div>
+        </article>
+
+        <!-- P3 Program Generator Mobile -->
+        <article class="project-card reveal">
+          <div class="project-card__top">
+            <i class="fas fa-mobile-alt project-card__icon"></i>
+            <div class="project-card__links">
+              <a href="https://github.com/kiddogreed/ProgramGeneratorMobile" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-card__title">P3 Program Generator — Mobile</h3>
+          <p class="project-card__desc">
+            Flutter Android app for generating LDS ward meeting programs (Sacrament, Ward Council,
+            Bishopric). 100% offline with SQLite, PDF export, print &amp; share, speaker rotation
+            automation, and full CRUD management screens. v1.1.0.
+          </p>
+          <div class="project-card__footer">
+            <ul class="project-card__stack">
+              <li>Flutter</li><li>Dart</li><li>SQLite</li><li>PDF</li>
+            </ul>
+            <span class="project-card__lang">
+              <span class="lang-dot" style="background:#00b4c6;"></span> Dart
             </span>
           </div>
         </article>

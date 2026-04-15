@@ -5,6 +5,39 @@
 
 'use strict';
 
+/* ── 0. THEME TOGGLE (DARK / LIGHT) ────────────────── */
+(function initTheme() {
+  const btn  = document.getElementById('themeToggle');
+  const icon = document.getElementById('themeIcon');
+  if (!btn || !icon) return;
+
+  // Determine initial preference: saved > system
+  const saved  = localStorage.getItem('theme');
+  const prefer = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  const initial = saved || prefer;
+
+  function apply(theme) {
+    if (theme === 'light') {
+      document.body.classList.add('light');
+      icon.className = 'fas fa-moon';
+      btn.setAttribute('aria-label', 'Switch to dark mode');
+    } else {
+      document.body.classList.remove('light');
+      icon.className = 'fas fa-sun';
+      btn.setAttribute('aria-label', 'Switch to light mode');
+    }
+    localStorage.setItem('theme', theme);
+  }
+
+  apply(initial);
+
+  btn.addEventListener('click', () => {
+    const next = document.body.classList.contains('light') ? 'dark' : 'light';
+    apply(next);
+  });
+})();
+
+
 /* ── 1. HERO CANVAS — PARTICLE NETWORK ────────────── */
 (function initCanvas() {
   const canvas = document.getElementById('heroCanvas');
