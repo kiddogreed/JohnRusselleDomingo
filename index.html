@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>John Russelle Domingo — Portfolio</title>
+  <meta name="description" content="Software Engineer, AI Enthusiast, and Full-Stack Developer based in Makati, Manila, Philippines." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👨‍💻</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+
+  <!-- ══════════════════ NAVIGATION ══════════════════ -->
+  <nav class="nav" id="navbar">
+    <a href="#home" class="nav__logo">&lt;JRD /&gt;</a>
+    <button class="nav__toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <ul class="nav__links" id="navLinks">
+      <li><a href="#about"><span class="nav__num">01.</span> About</a></li>
+      <li><a href="#skills"><span class="nav__num">02.</span> Skills</a></li>
+      <li><a href="#projects"><span class="nav__num">03.</span> Projects</a></li>
+      <li><a href="#contact"><span class="nav__num">04.</span> Contact</a></li>
+      <li>
+        <a
+          href="https://github.com/kiddogreed"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn--sm btn--outline"
+        >GitHub</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ══════════════════ HERO ══════════════════ -->
+  <section class="hero" id="home">
+    <canvas id="heroCanvas" class="hero__canvas"></canvas>
+    <div class="hero__content">
+      <p class="hero__greeting">Hi, my name is</p>
+      <h1 class="hero__name">John Russelle<br />Domingo.</h1>
+      <h2 class="hero__subtitle" id="heroSubtitle"></h2>
+      <p class="hero__bio">
+        I build scalable web applications and explore the intersection of
+        <span class="accent">DevOps</span> &amp; <span class="accent">Artificial Intelligence</span>.
+        Currently crafting autonomous agents and on-device AI solutions.
+      </p>
+      <div class="hero__cta">
+        <a href="#projects" class="btn btn--primary">View My Work</a>
+        <a
+          href="https://github.com/kiddogreed"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn--ghost"
+        ><i class="fab fa-github"></i> GitHub</a>
+      </div>
+    </div>
+    <div class="hero__scroll-indicator" aria-hidden="true">
+      <div class="hero__mouse">
+        <div class="hero__mouse-wheel"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ ABOUT ══════════════════ -->
+  <section class="section" id="about">
+    <div class="container">
+      <h2 class="section-title">
+        <span class="section-title__num">01.</span>
+        About Me
+        <span class="section-title__line"></span>
+      </h2>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p>
+            Hey there! I'm <strong class="text-light">John</strong> — a software engineer based in
+            <span class="accent">Makati, Metro Manila, Philippines 🇵🇭</span>. I love building
+            clean, scalable applications and obsessing over the details that make great software.
+          </p>
+          <p>
+            I specialize in <strong class="text-light">full-stack development</strong> across Java/Spring Boot
+            and TypeScript/Next.js, and I'm deeply passionate about <strong class="text-light">AI engineering</strong>
+            — currently exploring autonomous agents, RAG architectures, and on-device LLM solutions.
+          </p>
+          <p>
+            At work, I'm part of the engineering team at <strong class="text-light">WSI Metro Bank</strong>.
+            Outside of that, I build open-source tools, contribute to my community, and chase the next
+            interesting technical challenge.
+          </p>
+          <ul class="about-meta">
+            <li><i class="fas fa-map-marker-alt"></i> Makati, Metro Manila, Philippines</li>
+            <li><i class="fas fa-building"></i> WSI Metro Bank</li>
+            <li>
+              <i class="fas fa-envelope"></i>
+              <a href="mailto:johnrusselledomingo@gmail.com">johnrusselledomingo@gmail.com</a>
+            </li>
+          </ul>
+        </div>
+        <div class="about-photo reveal">
+          <div class="photo-wrapper">
+            <img
+              src="https://avatars.githubusercontent.com/u/25411018?v=4"
+              alt="John Russelle Domingo"
+              width="300" height="300"
+              loading="lazy"
+            />
+            <div class="photo-border"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ SKILLS ══════════════════ -->
+  <section class="section section--alt" id="skills">
+    <div class="container">
+      <h2 class="section-title">
+        <span class="section-title__num">02.</span>
+        Skills &amp; Tech Stack
+        <span class="section-title__line"></span>
+      </h2>
+
+      <div class="skills-categories reveal">
+        <div class="skills-cat">
+          <h3><i class="fas fa-code"></i> Languages</h3>
+          <div class="tags">
+            <span class="tag tag--java">Java</span>
+            <span class="tag tag--ts">TypeScript</span>
+            <span class="tag tag--cs">C#</span>
+            <span class="tag tag--sql">SQL</span>
+            <span class="tag tag--dart">Dart</span>
+          </div>
+        </div>
+        <div class="skills-cat">
+          <h3><i class="fas fa-layer-group"></i> Frameworks</h3>
+          <div class="tags">
+            <span class="tag">Spring Boot</span>
+            <span class="tag">Next.js</span>
+            <span class="tag">Express.js</span>
+            <span class="tag">Flutter</span>
+          </div>
+        </div>
+        <div class="skills-cat">
+          <h3><i class="fas fa-brain"></i> AI / ML</h3>
+          <div class="tags">
+            <span class="tag tag--ai">LangGraph</span>
+            <span class="tag tag--ai">RAG Architectures</span>
+            <span class="tag tag--ai">Ollama / Llama3</span>
+            <span class="tag tag--ai">pgvector</span>
+            <span class="tag tag--ai">Sentence Transformers</span>
+          </div>
+        </div>
+        <div class="skills-cat">
+          <h3><i class="fas fa-database"></i> Databases</h3>
+          <div class="tags">
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">Prisma ORM</span>
+          </div>
+        </div>
+        <div class="skills-cat">
+          <h3><i class="fas fa-tools"></i> DevOps &amp; Tools</h3>
+          <div class="tags">
+            <span class="tag">Docker</span>
+            <span class="tag">Git</span>
+            <span class="tag">GitHub Actions</span>
+            <span class="tag">REST APIs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="skill-bars reveal">
+        <h3 class="skill-bars__heading">Core Proficiency</h3>
+        <div class="skill-bar">
+          <div class="skill-bar__header">
+            <span>Full-Stack Development (Java + TypeScript)</span>
+            <span class="skill-bar__pct">90%</span>
+          </div>
+          <div class="skill-bar__track">
+            <div class="skill-bar__fill" data-width="90"></div>
+          </div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar__header">
+            <span>Spring Boot / Java Backend</span>
+            <span class="skill-bar__pct">85%</span>
+          </div>
+          <div class="skill-bar__track">
+            <div class="skill-bar__fill" data-width="85"></div>
+          </div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar__header">
+            <span>Next.js / TypeScript</span>
+            <span class="skill-bar__pct">80%</span>
+          </div>
+          <div class="skill-bar__track">
+            <div class="skill-bar__fill" data-width="80"></div>
+          </div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar__header">
+            <span>AI / LLM Engineering</span>
+            <span class="skill-bar__pct">80%</span>
+          </div>
+          <div class="skill-bar__track">
+            <div class="skill-bar__fill" data-width="80"></div>
+          </div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar__header">
+            <span>DevOps / Docker / CI-CD</span>
+            <span class="skill-bar__pct">70%</span>
+          </div>
+          <div class="skill-bar__track">
+            <div class="skill-bar__fill" data-width="70"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ PROJECTS ══════════════════ -->
+  <section class="section" id="projects">
+    <div class="container">
+      <h2 class="section-title">
+        <span class="section-title__num">03.</span>
+        Featured Projects
+        <span class="section-title__line"></span>
+      </h2>
+      <p class="section-subtitle reveal">A selection of things I've built — view all on
+        <a href="https://github.com/kiddogreed" target="_blank" rel="noopener noreferrer">GitHub</a>.
+      </p>
+
+      <div class="projects-grid">
+
+        <!-- ADC Knowledge Base -->
+        <article class="project-card reveal">
+          <div class="project-card__top">
+            <i class="fas fa-folder-open project-card__icon"></i>
+            <div class="project-card__links">
+              <a href="https://github.com/kiddogreed/adc-knowledge-base" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-card__title">ADC Knowledge Base</h3>
+          <p class="project-card__desc">
+            Autonomous DevOps Companion — a fully local, free RAG knowledge base built with
+            Prisma, PostgreSQL/pgvector, sentence-transformers, Express &amp; Ollama/Llama3.
+            Zero API keys required.
+          </p>
+          <div class="project-card__footer">
+            <ul class="project-card__stack">
+              <li>RAG</li><li>pgvector</li><li>Ollama</li><li>Express</li>
+            </ul>
+            <span class="project-card__lang">
+              <span class="lang-dot" style="background:#89e051;"></span> Shell
+            </span>
+          </div>
+        </article>
+
+        <!-- P3 Program Generator -->
+        <article class="project-card project-card--highlight reveal">
+          <div class="project-card__top">
+            <i class="fas fa-folder-open project-card__icon"></i>
+            <div class="project-card__links">
+              <a href="https://github.com/kiddogreed/P3_Program_Generator" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-card__title">P3 Program Generator</h3>
+          <p class="project-card__desc">
+            A modern Spring Boot web app for creating and managing church meeting programs with
+            elegant document generation capabilities and automated scheduling. ⭐ 1
+          </p>
+          <div class="project-card__footer">
+            <ul class="project-card__stack">
+              <li>Spring Boot</li><li>Java</li><li>Doc Gen</li>
+            </ul>
+            <span class="project-card__lang">
+              <span class="lang-dot" style="background:#b07219;"></span> Java
+            </span>
+          </div>
+        </article>
+
+        <!-- Dating App -->
+        <article class="project-card reveal">
+          <div class="project-card__top">
+            <i class="fas fa-folder-open project-card__icon"></i>
+            <div class="project-card__links">
+              <a href="https://github.com/kiddogreed/Dating-App" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-card__title">Dating / Matchmaking App</h3>
+          <p class="project-card__desc">
+            Full-stack matchmaking &amp; social platform with user authentication, profiles,
+            S3 photo uploads, real-time messaging via WebSocket, and a polished modern UI.
+          </p>
+          <div class="project-card__footer">
+            <ul class="project-card__stack">
+              <li>Next.js</li><li>TypeScript</li><li>WebSocket</li><li>S3</li>
+            </ul>
+            <span class="project-card__lang">
+              <span class="lang-dot" style="background:#3178c6;"></span> TypeScript
+            </span>
+          </div>
+        </article>
+
+        <!-- BundyClock Facial Recog -->
+        <article class="project-card reveal">
+          <div class="project-card__top">
+            <i class="fas fa-folder-open project-card__icon"></i>
+            <div class="project-card__links">
+              <a href="https://github.com/kiddogreed/bundyClock_withFacialRecog" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-card__title">BundyClock + Face Recognition</h3>
+          <p class="project-card__desc">
+            Full-stack time in/out attendance system with facial recognition, built as a modular
+            monorepo combining biometric security with a modern backend architecture.
+          </p>
+          <div class="project-card__footer">
+            <ul class="project-card__stack">
+              <li>Java</li><li>Face Recog</li><li>Monorepo</li>
+            </ul>
+            <span class="project-card__lang">
+              <span class="lang-dot" style="background:#b07219;"></span> Java
+            </span>
+          </div>
+        </article>
+
+        <!-- JRRD Wallet -->
+        <article class="project-card reveal">
+          <div class="project-card__top">
+            <i class="fas fa-folder-open project-card__icon"></i>
+            <div class="project-card__links">
+              <a href="https://github.com/kiddogreed/JRRD-Wallet" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-card__title">JRRD Wallet</h3>
+          <p class="project-card__desc">
+            A digital wallet application built with TypeScript, featuring financial transaction
+            management and modern UI/UX patterns for fintech solutions.
+          </p>
+          <div class="project-card__footer">
+            <ul class="project-card__stack">
+              <li>TypeScript</li><li>FinTech</li>
+            </ul>
+            <span class="project-card__lang">
+              <span class="lang-dot" style="background:#3178c6;"></span> TypeScript
+            </span>
+          </div>
+        </article>
+
+        <!-- Spring Boot Blog REST API -->
+        <article class="project-card reveal">
+          <div class="project-card__top">
+            <i class="fas fa-folder-open project-card__icon"></i>
+            <div class="project-card__links">
+              <a href="https://github.com/kiddogreed/spring-boot-blog-rest-api" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3 class="project-card__title">Spring Boot Blog REST API</h3>
+          <p class="project-card__desc">
+            A robust RESTful API backend for a blogging platform built with Spring Boot.
+            Features clean architecture, JWT auth, and full CRUD operations. ⭐ 1
+          </p>
+          <div class="project-card__footer">
+            <ul class="project-card__stack">
+              <li>Spring Boot</li><li>REST API</li><li>JWT</li>
+            </ul>
+            <span class="project-card__lang">
+              <span class="lang-dot" style="background:#b07219;"></span> Java
+            </span>
+          </div>
+        </article>
+
+      </div><!-- /projects-grid -->
+
+      <div class="projects-more reveal">
+        <a
+          href="https://github.com/kiddogreed?tab=repositories"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn--ghost"
+        >View All 102 Repositories &nbsp;<i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ CONTACT ══════════════════ -->
+  <section class="section section--alt" id="contact">
+    <div class="container contact-container">
+      <h2 class="section-title section-title--center">
+        <span class="section-title__num">04.</span>
+        Get In Touch
+      </h2>
+      <p class="contact-intro reveal">
+        I'm always open to discussing new projects, opportunities, or just a good
+        tech conversation. Whether you have a question or just want to say hi —
+        my inbox is open!
+      </p>
+      <div class="social-links reveal">
+        <a href="mailto:johnrusselledomingo@gmail.com" class="social-card">
+          <i class="fas fa-envelope"></i>
+          <div>
+            <strong>Email</strong>
+            <span>johnrusselledomingo@gmail.com</span>
+          </div>
+        </a>
+        <a href="https://github.com/kiddogreed" target="_blank" rel="noopener noreferrer" class="social-card">
+          <i class="fab fa-github"></i>
+          <div>
+            <strong>GitHub</strong>
+            <span>github.com/kiddogreed</span>
+          </div>
+        </a>
+        <a
+          href="https://www.linkedin.com/in/john-russelle-domingo-918b0b1a1/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-card"
+        >
+          <i class="fab fa-linkedin"></i>
+          <div>
+            <strong>LinkedIn</strong>
+            <span>john-russelle-domingo</span>
+          </div>
+        </a>
+        <a href="https://x.com/kiddogreed0" target="_blank" rel="noopener noreferrer" class="social-card">
+          <i class="fab fa-x-twitter"></i>
+          <div>
+            <strong>X / Twitter</strong>
+            <span>@kiddogreed0</span>
+          </div>
+        </a>
+      </div>
+      <div class="contact-cta reveal">
+        <a href="mailto:johnrusselledomingo@gmail.com" class="btn btn--primary btn--lg">
+          Say Hello &nbsp;<i class="fas fa-paper-plane"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ FOOTER ══════════════════ -->
+  <footer class="footer">
+    <p>
+      Designed &amp; Built by
+      <a href="https://github.com/kiddogreed" target="_blank" rel="noopener noreferrer">John Russelle Domingo</a>
+    </p>
+    <p class="footer__sub">Made with ❤️ in Manila</p>
+  </footer>
+
+  <!-- Side social links — desktop only -->
+  <aside class="side side--left" aria-hidden="true">
+    <a href="https://github.com/kiddogreed" target="_blank" rel="noopener noreferrer" title="GitHub">
+      <i class="fab fa-github"></i>
+    </a>
+    <a
+      href="https://www.linkedin.com/in/john-russelle-domingo-918b0b1a1/"
+      target="_blank"
+      rel="noopener noreferrer"
+      title="LinkedIn"
+    ><i class="fab fa-linkedin-in"></i></a>
+    <a href="https://x.com/kiddogreed0" target="_blank" rel="noopener noreferrer" title="X / Twitter">
+      <i class="fab fa-x-twitter"></i>
+    </a>
+    <div class="side__line"></div>
+  </aside>
+
+  <aside class="side side--right" aria-hidden="true">
+    <a href="mailto:johnrusselledomingo@gmail.com" class="side__email">
+      johnrusselledomingo@gmail.com
+    </a>
+    <div class="side__line"></div>
+  </aside>
+
+  <script src="script.js"></script>
+</body>
+</html>
