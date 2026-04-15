@@ -38,6 +38,27 @@
 })();
 
 
+/* ── 0b. PHOTO AUTO-FLIP every 5 s ─────────────────── */
+(function initPhotoFlip() {
+  const flipper = document.getElementById('photoFlipper');
+  const badge   = document.getElementById('photoBadge');
+  if (!flipper) return;
+
+  const labels = [
+    '<span>📸</span> Personal',
+    '<span>👤</span> GitHub',
+  ];
+
+  let flipped = false;
+
+  setInterval(() => {
+    flipped = !flipped;
+    flipper.classList.toggle('is-flipped', flipped);
+    if (badge) badge.innerHTML = labels[flipped ? 1 : 0];
+  }, 5000);
+})();
+
+
 /* ── 1. HERO CANVAS — PARTICLE NETWORK ────────────── */
 (function initCanvas() {
   const canvas = document.getElementById('heroCanvas');
@@ -54,8 +75,15 @@
   // Returns [r, g, b] based on current theme
   function particleRGB() {
     return document.body.classList.contains('light')
-      ? [0, 80, 180]       // dark navy-blue on light bg
+      ? [0, 60, 150]       // deep blue on light bg — high contrast
       : [100, 255, 218];   // original cyan on dark bg
+  }
+
+  // Returns opacity multipliers for dots, lines, mouse-lines
+  function particleOpacity() {
+    return document.body.classList.contains('light')
+      ? { dot: 0.65, line: 0.45, mouse: 0.85 }
+      : { dot: 0.45, line: 0.18, mouse: 0.42 };
   }
 
   function Particle() {
@@ -77,9 +105,10 @@
   };
   Particle.prototype.draw = function () {
     const [r, g, b] = particleRGB();
+    const o = particleOpacity();
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${r},${g},${b},${this.a})`;
+    ctx.fillStyle = `rgba(${r},${g},${b},${this.a * (o.dot / 0.45)})`;
     ctx.fill();
   };
 
@@ -92,6 +121,7 @@
 
   function drawLines() {
     const [r, g, b] = particleRGB();
+    const o = particleOpacity();
     for (let i = 0; i < particles.length; i++) {
       const pi = particles[i];
 
@@ -105,7 +135,7 @@
           ctx.beginPath();
           ctx.moveTo(pi.x, pi.y);
           ctx.lineTo(pj.x, pj.y);
-          ctx.strokeStyle = `rgba(${r},${g},${b},${(1 - d / DIST) * 0.18})`;
+          ctx.strokeStyle = `rgba(${r},${g},${b},${(1 - d / DIST) * o.line})`;
           ctx.lineWidth   = 0.7;
           ctx.stroke();
         }
@@ -121,7 +151,7 @@
           ctx.beginPath();
           ctx.moveTo(pi.x, pi.y);
           ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(${r},${g},${b},${(1 - d / md) * 0.42})`;
+          ctx.strokeStyle = `rgba(${r},${g},${b},${(1 - d / md) * o.mouse})`;
           ctx.lineWidth   = 0.9;
           ctx.stroke();
         }
