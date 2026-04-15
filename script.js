@@ -35,6 +35,12 @@
     const next = document.body.classList.contains('light') ? 'dark' : 'light';
     apply(next);
   });
+
+  // Auto-cycle dark ↔ light every 30 seconds
+  setInterval(() => {
+    const next = document.body.classList.contains('light') ? 'dark' : 'light';
+    apply(next);
+  }, 30000);
 })();
 
 
