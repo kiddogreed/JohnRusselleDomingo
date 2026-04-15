@@ -489,6 +489,9 @@ body.light .theme-toggle { color: var(--c-cyan); border-color: var(--c-cyan); }
 .photo-face--back {
   transform: rotateY(180deg);
 }
+.photo-face--back img {
+  object-position: center center;
+}
 .photo-face img {
   width: 100%;
   height: 100%;
