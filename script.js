@@ -51,6 +51,13 @@
   let W, H, particles, raf;
   const mouse = { x: null, y: null };
 
+  // Returns [r, g, b] based on current theme
+  function particleRGB() {
+    return document.body.classList.contains('light')
+      ? [0, 80, 180]       // dark navy-blue on light bg
+      : [100, 255, 218];   // original cyan on dark bg
+  }
+
   function Particle() {
     this.reset();
   }
@@ -60,7 +67,7 @@
     this.vx = (Math.random() - 0.5) * 0.45;
     this.vy = (Math.random() - 0.5) * 0.45;
     this.r  = Math.random() * 1.8 + 0.8;
-    this.a  = Math.random() * 0.45 + 0.15;
+    this.a  = Math.random() * 0.45 + 0.18;
   };
   Particle.prototype.update = function () {
     this.x += this.vx;
@@ -69,9 +76,10 @@
     if (this.y < 0 || this.y > H) this.vy *= -1;
   };
   Particle.prototype.draw = function () {
+    const [r, g, b] = particleRGB();
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(100,255,218,${this.a})`;
+    ctx.fillStyle = `rgba(${r},${g},${b},${this.a})`;
     ctx.fill();
   };
 
@@ -83,6 +91,7 @@
   }
 
   function drawLines() {
+    const [r, g, b] = particleRGB();
     for (let i = 0; i < particles.length; i++) {
       const pi = particles[i];
 
@@ -96,7 +105,7 @@
           ctx.beginPath();
           ctx.moveTo(pi.x, pi.y);
           ctx.lineTo(pj.x, pj.y);
-          ctx.strokeStyle = `rgba(100,255,218,${(1 - d / DIST) * 0.12})`;
+          ctx.strokeStyle = `rgba(${r},${g},${b},${(1 - d / DIST) * 0.18})`;
           ctx.lineWidth   = 0.7;
           ctx.stroke();
         }
@@ -112,7 +121,7 @@
           ctx.beginPath();
           ctx.moveTo(pi.x, pi.y);
           ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(100,255,218,${(1 - d / md) * 0.28})`;
+          ctx.strokeStyle = `rgba(${r},${g},${b},${(1 - d / md) * 0.42})`;
           ctx.lineWidth   = 0.9;
           ctx.stroke();
         }

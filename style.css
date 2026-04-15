@@ -47,7 +47,6 @@ body.light {
 body.light ::-webkit-scrollbar-track  { background: var(--c-bg); }
 body.light ::-webkit-scrollbar-thumb  { background: var(--c-navy); }
 body.light .nav.scrolled              { background: rgba(240,244,248,0.97); }
-body.light .hero__canvas              { opacity: 0.6; }
 
 /* ── RESET + BASE ──────────────────────────────────── */
 *, *::before, *::after {
@@ -460,18 +459,44 @@ body.light .theme-toggle { color: var(--c-cyan); border-color: var(--c-cyan); }
   width: 260px;
   height: 260px;
   flex-shrink: 0;
+  perspective: 800px;
 }
-.photo-wrapper img {
+
+/* 3-D flip card */
+.photo-flipper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+  border-radius: var(--radius-lg);
+  z-index: 1;
+}
+.photo-wrapper:hover .photo-flipper {
+  transform: rotateY(180deg);
+}
+
+.photo-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.photo-face--back {
+  transform: rotateY(180deg);
+}
+.photo-face img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: var(--radius-lg);
-  filter: grayscale(20%) contrast(1.05);
-  transition: var(--t);
-  position: relative;
-  z-index: 1;
+  filter: grayscale(15%) contrast(1.05);
+  transition: filter 0.4s ease;
+  display: block;
 }
-.photo-wrapper:hover img { filter: none; }
+.photo-wrapper:hover .photo-face img { filter: none; }
 
 .photo-border {
   position: absolute;
@@ -868,7 +893,7 @@ body.light .theme-toggle { color: var(--c-cyan); border-color: var(--c-cyan); }
     gap: 3rem;
   }
   .about-photo { order: -1; }
-  .photo-wrapper { width: 200px; height: 200px; margin: 0 auto; }
+  .photo-wrapper { width: 200px; height: 200px; margin: 0 auto; perspective: 600px; }
 }
 
 @media (max-width: 600px) {
