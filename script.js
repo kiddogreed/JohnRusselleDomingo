@@ -71,19 +71,28 @@
 
   let W, H, particles, raf;
   const mouse = { x: null, y: null };
+  let hue = 0; // cycles 0–360 for dark-mode RGB hover effect
 
-  // Returns [r, g, b] based on current theme
-  function particleRGB() {
-    return document.body.classList.contains('light')
-      ? [0, 60, 150]       // deep blue on light bg — high contrast
-      : [100, 255, 218];   // original cyan on dark bg
-  }
+  // Target palette per theme
+  const THEME_DARK  = { r: 100, g: 255, b: 218, dotA: 0.45, lineA: 0.18, mouseA: 0.42 };
+  const THEME_LIGHT = { r:   0, g:  80, b: 200, dotA: 0.70, lineA: 0.50, mouseA: 0.90 };
 
-  // Returns opacity multipliers for dots, lines, mouse-lines
-  function particleOpacity() {
-    return document.body.classList.contains('light')
-      ? { dot: 0.65, line: 0.45, mouse: 0.85 }
-      : { dot: 0.45, line: 0.18, mouse: 0.42 };
+  // Current interpolated values (start at dark)
+  let cur = { ...THEME_DARK };
+
+  // Lerp helper
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  // Called every frame — smoothly moves cur toward the active theme target
+  function lerpColors() {
+    const target = document.body.classList.contains('light') ? THEME_LIGHT : THEME_DARK;
+    const t = 0.04; // speed: lower = slower transition
+    cur.r      = lerp(cur.r,      target.r,      t);
+    cur.g      = lerp(cur.g,      target.g,      t);
+    cur.b      = lerp(cur.b,      target.b,      t);
+    cur.dotA   = lerp(cur.dotA,   target.dotA,   t);
+    cur.lineA  = lerp(cur.lineA,  target.lineA,  t);
+    cur.mouseA = lerp(cur.mouseA, target.mouseA, t);
   }
 
   function Particle() {
@@ -104,11 +113,18 @@
     if (this.y < 0 || this.y > H) this.vy *= -1;
   };
   Particle.prototype.draw = function () {
-    const [r, g, b] = particleRGB();
-    const o = particleOpacity();
+    const isDark    = !document.body.classList.contains('light');
+    const hovering  = mouse.x !== null;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${r},${g},${b},${this.a * (o.dot / 0.45)})`;
+    if (isDark && hovering) {
+      // each dot shifts hue slightly based on its position → scattered rainbow
+      const h = (hue + (this.x / W) * 80 + (this.y / H) * 40) % 360;
+      ctx.fillStyle = `hsla(${h|0},100%,72%,${this.a.toFixed(3)})`;
+    } else {
+      const { r, g, b, dotA } = cur;
+      ctx.fillStyle = `rgba(${r|0},${g|0},${b|0},${(this.a * (dotA / 0.45)).toFixed(3)})`;
+    }
     ctx.fill();
   };
 
@@ -120,8 +136,11 @@
   }
 
   function drawLines() {
-    const [r, g, b] = particleRGB();
-    const o = particleOpacity();
+    const { r, g, b, lineA, mouseA } = cur;
+    const ri = r|0, gi = g|0, bi = b|0;
+    const isDark   = !document.body.classList.contains('light');
+    const hovering = mouse.x !== null;
+
     for (let i = 0; i < particles.length; i++) {
       const pi = particles[i];
 
@@ -135,14 +154,20 @@
           ctx.beginPath();
           ctx.moveTo(pi.x, pi.y);
           ctx.lineTo(pj.x, pj.y);
-          ctx.strokeStyle = `rgba(${r},${g},${b},${(1 - d / DIST) * o.line})`;
-          ctx.lineWidth   = 0.7;
+          if (isDark && hovering) {
+            // lines between dots shift hue slowly across the canvas
+            const h = (hue + i * 5) % 360;
+            ctx.strokeStyle = `hsla(${h|0},100%,65%,${((1 - d / DIST) * 0.28).toFixed(3)})`;
+          } else {
+            ctx.strokeStyle = `rgba(${ri},${gi},${bi},${((1 - d / DIST) * lineA).toFixed(3)})`;
+          }
+          ctx.lineWidth = 0.7;
           ctx.stroke();
         }
       }
 
       // particle–mouse connections
-      if (mouse.x !== null) {
+      if (hovering) {
         const dx = pi.x - mouse.x;
         const dy = pi.y - mouse.y;
         const d  = Math.sqrt(dx * dx + dy * dy);
@@ -151,8 +176,15 @@
           ctx.beginPath();
           ctx.moveTo(pi.x, pi.y);
           ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(${r},${g},${b},${(1 - d / md) * o.mouse})`;
-          ctx.lineWidth   = 0.9;
+          if (isDark) {
+            // each spoke gets a different hue → burst of rainbow from cursor
+            const h = (hue + i * 14) % 360;
+            ctx.strokeStyle = `hsla(${h|0},100%,68%,${((1 - d / md) * 0.85).toFixed(3)})`;
+            ctx.lineWidth   = 1.1;
+          } else {
+            ctx.strokeStyle = `rgba(${ri},${gi},${bi},${((1 - d / md) * mouseA).toFixed(3)})`;
+            ctx.lineWidth   = 0.9;
+          }
           ctx.stroke();
         }
       }
@@ -161,6 +193,11 @@
 
   function loop() {
     ctx.clearRect(0, 0, W, H);
+    lerpColors();
+    // advance RGB hue only in dark mode while mouse is over canvas
+    if (!document.body.classList.contains('light') && mouse.x !== null) {
+      hue = (hue + 1.4) % 360;
+    }
     drawLines();
     particles.forEach(p => { p.update(); p.draw(); });
     raf = requestAnimationFrame(loop);
