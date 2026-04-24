@@ -175,12 +175,12 @@ JohnRusselleDomingo/
 
 ## Skills Covered
 
-**Languages:** Java · TypeScript · C# · SQL · Dart  
-**Frameworks:** Spring Boot · Angular · React · Vue.js · .NET  
+**Languages:** Java · TypeScript · C# · SQL · Dart · PHP · Python · Node.js  
+**Frameworks:** Spring Boot · Angular · React · Vue.js · .NET · AdonisJs  
 **Mobile:** Flutter · Dart · Android · SQLite  
 **AI/ML:** TensorFlow · Python · scikit-learn · Pandas  
-**Databases:** MySQL · PostgreSQL · MongoDB · Redis  
-**DevOps:** Docker · Kubernetes · GitHub Actions · AWS  
+**Databases:** MySQL · Snowflake · PostgreSQL · MongoDB · Redis  
+**DevOps & Tools:** Docker · Kubernetes · GitHub Actions · AWS · n8n · jBPM · Postman  
 
 ---
 

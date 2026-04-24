@@ -67,6 +67,7 @@
 
 /* ── 1. HERO CANVAS — PARTICLE NETWORK ────────────── */
 (function initCanvas() {
+
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
 
@@ -78,6 +79,33 @@
   let W, H, particles, raf;
   const mouse = { x: null, y: null };
   let hue = 0; // cycles 0–360 for dark-mode RGB hover effect
+
+  // Always interactive: effect is enabled everywhere on the page
+  function isEverywhere() {
+    return true;
+  }
+
+  // Track mouse globally, but only trigger RGB effect if inside hero
+  function updateMouse(e) {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    mouse.inMain = isEverywhere();
+  }
+  function clearMouse() {
+    mouse.x = mouse.y = null;
+    mouse.inMain = false;
+  }
+
+  window.addEventListener('mousemove', updateMouse);
+  window.addEventListener('mouseleave', clearMouse);
+  window.addEventListener('touchmove', e => {
+    if (e.touches && e.touches.length > 0) {
+      mouse.x = e.touches[0].clientX;
+      mouse.y = e.touches[0].clientY;
+      mouse.inMain = isEverywhere();
+    }
+  }, { passive: true });
+  window.addEventListener('touchend', clearMouse);
 
   // Target palette per theme
   const THEME_DARK  = { r: 100, g: 255, b: 218, dotA: 0.45, lineA: 0.18, mouseA: 0.42 };
@@ -120,7 +148,7 @@
   };
   Particle.prototype.draw = function () {
     const isDark    = !document.body.classList.contains('light');
-    const hovering  = mouse.x !== null;
+    const hovering  = mouse.x !== null && mouse.inMain;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
     if (isDark && hovering) {
@@ -145,7 +173,7 @@
     const { r, g, b, lineA, mouseA } = cur;
     const ri = r|0, gi = g|0, bi = b|0;
     const isDark   = !document.body.classList.contains('light');
-    const hovering = mouse.x !== null;
+    const hovering = mouse.x !== null && mouse.inMain;
 
     for (let i = 0; i < particles.length; i++) {
       const pi = particles[i];
@@ -201,7 +229,7 @@
     ctx.clearRect(0, 0, W, H);
     lerpColors();
     // advance RGB hue only in dark mode while mouse is over canvas
-    if (!document.body.classList.contains('light') && mouse.x !== null) {
+    if (!document.body.classList.contains('light') && mouse.x !== null && mouse.inMain) {
       hue = (hue + 1.4) % 360;
     }
     drawLines();
@@ -220,6 +248,8 @@
     }, 150);
   });
 
+
+  // Interactivity everywhere: respond to mouse/touch on the whole page
   canvas.addEventListener('mousemove', e => {
     const r  = canvas.getBoundingClientRect();
     mouse.x  = e.clientX - r.left;
