@@ -72,13 +72,15 @@
   if (!canvas) return;
 
   const ctx    = canvas.getContext('2d');
-  const COUNT  = 75;
-  const DIST   = 140;
+  const COUNT_DESKTOP = 75;
+  const COUNT_MOBILE  = 28;
+  const DIST  = 140;
   const mobile = window.matchMedia('(max-width: 600px)');
 
   let W, H, particles, raf;
   const mouse = { x: null, y: null };
   let hue = 0; // cycles 0–360 for dark-mode RGB hover effect
+  let lastFrame = 0;
 
   // Always interactive: effect is enabled everywhere on the page
   function isEverywhere() {
@@ -163,9 +165,14 @@
   };
 
   function resize() {
-    W = canvas.width  = canvas.offsetWidth;
-    H = canvas.height = canvas.offsetHeight;
-    const n = mobile.matches ? Math.floor(COUNT * 0.55) : COUNT;
+    // Lower canvas resolution on mobile for better performance
+    const dpr = window.devicePixelRatio || 1;
+    const scale = mobile.matches ? 0.7 : 1;
+    W = canvas.width  = Math.floor(canvas.offsetWidth * scale * dpr);
+    H = canvas.height = Math.floor(canvas.offsetHeight * scale * dpr);
+    canvas.style.width  = '';
+    canvas.style.height = '';
+    const n = mobile.matches ? COUNT_MOBILE : COUNT_DESKTOP;
     particles = Array.from({ length: n }, () => new Particle());
   }
 
@@ -225,7 +232,13 @@
     }
   }
 
-  function loop() {
+  function loop(now) {
+    // Throttle frame rate on mobile (max ~30fps)
+    if (mobile.matches && lastFrame && now - lastFrame < 33) {
+      raf = requestAnimationFrame(loop);
+      return;
+    }
+    lastFrame = now || performance.now();
     ctx.clearRect(0, 0, W, H);
     lerpColors();
     // advance RGB hue only in dark mode while mouse is over canvas
@@ -266,7 +279,7 @@
   canvas.addEventListener('touchend', () => { mouse.x = mouse.y = null; });
 
   resize();
-  loop();
+  requestAnimationFrame(loop);
 })();
 
 
