@@ -285,6 +285,545 @@
 
 /* ── 2. TYPING ANIMATION ───────────────────────────── */
 (function initTyping() {
+/* ── SPACE IMPACT GAME ───────────────────────────── */
+(function initSpaceImpactGame() {
+  const canvas = document.getElementById('spaceImpactCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+
+  // Game state
+  let running = true;
+  let score = 0;
+  let frame = 0;
+
+  // Level state
+  let inBoss = false;
+  let boss = null;
+  let level = 1;
+  let bossDefeated = false;
+
+  // Moving starfield background (parallax)
+  const starLayers = [
+    { count: 32, speed: 0.7, color: '#fff', size: 1.2, stars: [] },
+    { count: 18, speed: 1.5, color: '#64ffda', size: 1.7, stars: [] },
+    { count: 8,  speed: 2.5, color: '#ff4e50', size: 2.2, stars: [] }
+  ];
+  function initStars() {
+    starLayers.forEach(layer => {
+      layer.stars = Array.from({length: layer.count}, () => ({
+        x: Math.random() * W,
+        y: Math.random() * H
+      }));
+    });
+  }
+  initStars();
+
+  // Helper to scroll to profile/hero section
+  function scrollToProfile() {
+    const hero = document.getElementById('home') || document.querySelector('.hero');
+    if (hero) {
+      hero.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // Player
+  const player = {
+    x: 40,
+    y: H / 2 - 16,
+    w: 32,
+    h: 24,
+    speed: 3.2,
+    dy: 0,
+    color: '#64ffda',
+    bullets: [],
+    cooldown: 0
+  };
+
+  // Enemies
+  const enemies = [];
+  function spawnEnemy() {
+    if (inBoss) return;
+    const size = Math.random() * 18 + 18;
+    enemies.push({
+      x: W + size,
+      y: Math.random() * (H - size),
+      w: size,
+      h: size * 0.7,
+      speed: 1.7 + Math.random() * 1.7 + level * 0.2,
+      color: '#ff4e50',
+      alive: true
+    });
+  }
+
+  // Boss
+  function spawnBoss() {
+    inBoss = true;
+    bossDefeated = false;
+    boss = {
+      x: W - 120,
+      y: H / 2 - 48,
+      w: 96,
+      h: 96,
+      color: '#f7b731',
+      hp: 60 + 20 * level,
+      maxHp: 60 + 20 * level,
+      vy: 2.2,
+      dir: 1,
+      cooldown: 0,
+      bullets: [],
+      shape: level >= 2 ? 'circle' : 'rect'
+    };
+  }
+
+  // Controls
+  const keys = {};
+  canvas.setAttribute('tabindex', '0');
+  canvas.focus();
+  canvas.addEventListener('keydown', e => {
+    keys[e.key.toLowerCase()] = true;
+    // Prevent space/arrow keys from scrolling the page when game is running
+    if (running && (e.key === ' ' || e.key === 'Spacebar' || e.key.startsWith('Arrow'))) {
+      e.preventDefault();
+    }
+  });
+  canvas.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+  // Also listen globally for accessibility
+  window.addEventListener('keydown', e => {
+    if (document.activeElement === canvas) {
+      keys[e.key.toLowerCase()] = true;
+      if (running && (e.key === ' ' || e.key === 'Spacebar' || e.key.startsWith('Arrow'))) {
+        e.preventDefault();
+      }
+    }
+  });
+  window.addEventListener('keyup', e => { if (document.activeElement === canvas) keys[e.key.toLowerCase()] = false; });
+
+  function update() {
+    // Move background stars
+    starLayers.forEach(layer => {
+      layer.stars.forEach(star => {
+        star.x -= layer.speed;
+        if (star.x < 0) {
+          star.x = W;
+          star.y = Math.random() * H;
+        }
+      });
+    });
+    // Player movement
+    if (keys['arrowup'] || keys['w']) player.y -= player.speed;
+    if (keys['arrowdown'] || keys['s']) player.y += player.speed;
+    if (keys['arrowleft'] || keys['a']) player.x -= player.speed;
+    if (keys['arrowright'] || keys['d']) player.x += player.speed;
+    // Clamp
+    player.x = Math.max(0, Math.min(W - player.w, player.x));
+    player.y = Math.max(0, Math.min(H - player.h, player.y));
+
+    // Shooting
+    if ((keys[' '] || keys['space']) && player.cooldown <= 0) {
+      player.bullets.push({ x: player.x + player.w, y: player.y + player.h / 2 - 2, w: 12, h: 4, speed: 6, color: '#fff' });
+      player.cooldown = 13;
+    }
+    if (player.cooldown > 0) player.cooldown--;
+
+    // Update bullets
+    player.bullets.forEach(b => b.x += b.speed);
+    player.bullets = player.bullets.filter(b => b.x < W + 20);
+
+    // Spawn enemies or boss
+    if (!inBoss) {
+      if (frame % 55 === 0) spawnEnemy();
+      enemies.forEach(e => { e.x -= e.speed; });
+      // Remove off-screen
+      while (enemies.length && enemies[0].x + enemies[0].w < 0) enemies.shift();
+      // Trigger boss after score threshold
+      if (score >= 120 * level) {
+        enemies.length = 0;
+        spawnBoss();
+      }
+    } else if (boss) {
+      // Boss movement
+      boss.y += boss.vy * boss.dir;
+      if (boss.y < 10 || boss.y + boss.h > H - 10) boss.dir *= -1;
+      // Boss shooting
+      if (boss.cooldown <= 0) {
+        boss.bullets.push({
+          x: boss.x,
+          y: boss.y + boss.h / 2 - 6,
+          w: 18,
+          h: 12,
+          speed: 2.2 + level * 0.18, // slower projectile
+          color: '#f7b731',
+        });
+        boss.cooldown = 38 - Math.min(level * 2, 18);
+      } else {
+        boss.cooldown--;
+      }
+      boss.bullets.forEach(b => b.x -= b.speed);
+      boss.bullets = boss.bullets.filter(b => b.x + b.w > 0);
+    }
+
+    // Collisions
+    if (!inBoss) {
+      enemies.forEach(e => {
+        if (!e.alive) return;
+        // Player collision
+        if (rectsCollide(player, e)) {
+          running = false;
+        }
+        // Bullet collision
+        player.bullets.forEach(b => {
+          if (rectsCollide(b, e) && e.alive) {
+            e.alive = false;
+            score += 10;
+          }
+        });
+      });
+      // Remove dead enemies
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        if (!enemies[i].alive) enemies.splice(i, 1);
+      }
+    } else if (boss) {
+      // Player-boss collision
+      if (rectsCollide(player, boss)) running = false;
+      // Boss bullet collision with player
+      boss.bullets.forEach(b => {
+        if (rectsCollide(player, b)) running = false;
+      });
+      // Player bullet hits boss
+      player.bullets.forEach(b => {
+        if (rectsCollide(b, boss) && boss.hp > 0) {
+          boss.hp -= 2;
+          b.x = W + 100; // Remove bullet
+        }
+      });
+      // Boss defeated
+      if (boss.hp <= 0 && !bossDefeated) {
+        bossDefeated = true;
+        setTimeout(() => {
+          inBoss = false;
+          boss = null;
+          level++;
+          score += 100;
+        }, 1200);
+      }
+    }
+  }
+
+  function rectsCollide(a, b) {
+    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+  }
+
+  function drawMilkyWay(ctx, W, H) {
+    // Milky Way: a diagonal band of soft white/purple/blue
+    ctx.save();
+    ctx.globalAlpha = 0.10; // reduced opacity
+    const grad = ctx.createLinearGradient(0, H * 0.2, W, H * 0.8);
+    grad.addColorStop(0, '#fff');
+    grad.addColorStop(0.2, '#b3aaff');
+    grad.addColorStop(0.5, '#a0e9ff');
+    grad.addColorStop(0.8, '#e0c3fc');
+    grad.addColorStop(1, '#fff');
+    ctx.beginPath();
+    ctx.ellipse(W/2, H/2, W*0.55, H*0.13, Math.PI/6, 0, Math.PI*2);
+    ctx.fillStyle = grad;
+    ctx.filter = 'blur(10px)';
+    ctx.fill();
+    ctx.filter = 'none';
+    ctx.restore();
+  }
+
+  function drawBlackHole(ctx, W, H) {
+    // Black hole: top right, swirling effect
+    const x = W - 70, y = 70, r = 32;
+    ctx.save();
+    ctx.globalAlpha = 0.32; // reduced opacity
+    // Event horizon
+    const grad = ctx.createRadialGradient(x, y, r*0.3, x, y, r);
+    grad.addColorStop(0, '#222');
+    grad.addColorStop(0.5, '#222');
+    grad.addColorStop(0.7, '#6a4cff');
+    grad.addColorStop(0.85, '#fff');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    // Accretion disk (swirl)
+    ctx.globalAlpha = 0.18;
+    for (let i = 0; i < 7; i++) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate((Date.now()*0.0003 + i*0.7) % (Math.PI*2));
+      ctx.beginPath();
+      ctx.ellipse(0, 0, r+10+i*3, 7+i*1.5, 0, 0, Math.PI*2);
+      ctx.strokeStyle = i%2===0 ? '#fff' : '#a0e9ff';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+  function drawAsteroidBelt(ctx, W, H) {
+    // Asteroid belt: elliptical ring with small rocks
+    ctx.save();
+    ctx.globalAlpha = 0.18;
+    const cx = 110, cy = H - 60, rx = 170, ry = 38;
+    for (let i = 0; i < 38; i++) {
+      const angle = (i / 38) * Math.PI * 2 + Math.sin(Date.now()*0.00013 + i);
+      const r = rx + Math.sin(Date.now()*0.0007 + i) * 8;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * ry + Math.cos(Date.now()*0.0005 + i) * 2;
+      ctx.beginPath();
+      ctx.ellipse(x, y, 3 + Math.random()*1.5, 2 + Math.random(), 0, 0, Math.PI*2);
+      ctx.fillStyle = '#b8b8b8';
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawPlanets(ctx, W, H) {
+    // Add several planets at different orbits
+    const sunX = 60, sunY = H - 60;
+    const planets = [
+      { r: 38, color: '#e0c3fc', size: 7 }, // Mercury
+      { r: 62, color: '#ffe066', size: 10 }, // Venus
+      { r: 120, color: '#3fa7ff', size: 13 }, // Earth (already drawn, skip here)
+      { r: 170, color: '#ffb300', size: 15 }, // Mars
+      { r: 220, color: '#b3aaff', size: 18 }, // Jupiter
+      { r: 270, color: '#a0e9ff', size: 14 }, // Saturn
+      { r: 320, color: '#e0c3fc', size: 12 }, // Uranus
+      { r: 370, color: '#fff', size: 10 }, // Neptune
+    ];
+    const t = Date.now() * 0.00013;
+    planets.forEach((p, i) => {
+      if (p.r === 120) return; // skip Earth (already drawn)
+      const angle = t + i * 0.7;
+      const x = sunX + Math.cos(angle) * p.r;
+      const y = sunY - Math.sin(angle) * p.r * 0.7;
+      ctx.save();
+      ctx.globalAlpha = 0.7;
+      ctx.beginPath();
+      ctx.arc(x, y, p.size, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  function drawSolarSystemBackground() {
+    // Sun (bottom left)
+    const sunX = 60, sunY = H - 60, sunR = 48;
+    const grad = ctx.createRadialGradient(sunX, sunY, sunR * 0.2, sunX, sunY, sunR);
+    grad.addColorStop(0, '#fffbe6');
+    grad.addColorStop(0.3, '#ffe066');
+    grad.addColorStop(0.7, '#ffb300');
+    grad.addColorStop(1, 'rgba(255,179,0,0)');
+    ctx.save();
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath();
+    ctx.arc(sunX, sunY, sunR, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+    ctx.restore();
+
+    // Earth orbiting sun
+    const t = Date.now() * 0.00018;
+    const orbitR = 120;
+    const earthX = sunX + Math.cos(t) * orbitR;
+    const earthY = sunY - Math.sin(t) * orbitR * 0.7;
+    ctx.save();
+    ctx.globalAlpha = 0.85;
+    ctx.beginPath();
+    ctx.arc(earthX, earthY, 13, 0, Math.PI * 2);
+    ctx.fillStyle = '#3fa7ff';
+    ctx.fill();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#fff';
+    ctx.stroke();
+    // Continents (simple green blob)
+    ctx.beginPath();
+    ctx.arc(earthX + 3, earthY - 2, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#3ec46d';
+    ctx.fill();
+    ctx.restore();
+    // Orbit path
+    ctx.save();
+    ctx.globalAlpha = 0.18;
+    ctx.beginPath();
+    ctx.ellipse(sunX, sunY, orbitR, orbitR * 0.7, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = '#fff';
+    ctx.setLineDash([4, 6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    // Milky Way band
+    drawMilkyWay(ctx, W, H);
+    // Black hole
+    drawBlackHole(ctx, W, H);
+    // Asteroid belt
+    drawAsteroidBelt(ctx, W, H);
+    // Planets
+    drawPlanets(ctx, W, H);
+    // Solar system background
+    drawSolarSystemBackground();
+    // Moving starfield background
+    starLayers.forEach(layer => {
+      ctx.save();
+      ctx.globalAlpha = 0.5 + 0.2 * layer.size;
+      ctx.fillStyle = layer.color;
+      layer.stars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, layer.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    });
+    // Player
+    ctx.save();
+    ctx.fillStyle = player.color;
+    ctx.beginPath();
+    ctx.moveTo(player.x, player.y + player.h / 2);
+    ctx.lineTo(player.x + player.w, player.y);
+    ctx.lineTo(player.x + player.w, player.y + player.h);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    // Bullets
+    player.bullets.forEach(b => {
+      ctx.fillStyle = b.color;
+      ctx.fillRect(b.x, b.y, b.w, b.h);
+    });
+    // Enemies
+    if (!inBoss) {
+      enemies.forEach(e => {
+        ctx.save();
+        ctx.globalAlpha = e.alive ? 1 : 0.3;
+        ctx.fillStyle = e.color;
+        ctx.fillRect(e.x, e.y, e.w, e.h);
+        ctx.restore();
+      });
+    }
+    // Boss
+    if (inBoss && boss) {
+      ctx.save();
+      ctx.shadowColor = '#f7b731';
+      ctx.shadowBlur = 18;
+      ctx.fillStyle = boss.color;
+      if (boss.shape === 'circle') {
+        // Draw a glowing circle boss for level 2+
+        const cx = boss.x + boss.w / 2;
+        const cy = boss.y + boss.h / 2;
+        // Aura
+        const grad = ctx.createRadialGradient(cx, cy, boss.w * 0.3, cx, cy, boss.w * 0.5);
+        grad.addColorStop(0, '#fffbe6');
+        grad.addColorStop(0.5, '#f7b731');
+        grad.addColorStop(1, 'rgba(255,179,0,0)');
+        ctx.save();
+        ctx.globalAlpha = 0.45;
+        ctx.beginPath();
+        ctx.arc(cx, cy, boss.w * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.restore();
+        // Main body
+        ctx.beginPath();
+        ctx.arc(cx, cy, boss.w * 0.38, 0, Math.PI * 2);
+        ctx.fillStyle = boss.color;
+        ctx.fill();
+      } else {
+        // Default rectangle boss for level 1
+        ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
+      }
+      ctx.restore();
+      // Boss HP bar
+      ctx.fillStyle = '#222';
+      ctx.fillRect(boss.x, boss.y - 18, boss.w, 10);
+      ctx.fillStyle = '#f7b731';
+      ctx.fillRect(boss.x, boss.y - 18, boss.w * (boss.hp / boss.maxHp), 10);
+      // Boss bullets
+      boss.bullets.forEach(b => {
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+      });
+    }
+    // Score & Level
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px Fira Code, monospace';
+    ctx.fillText('Score: ' + score, 12, 26);
+    ctx.fillText('Level: ' + level, 12, 48);
+    // Game over
+    if (!running) {
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillRect(0, H/2-40, W, 80);
+      ctx.fillStyle = '#ff4e50';
+      ctx.font = 'bold 32px Fira Code, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('GAME OVER', W/2, H/2);
+      ctx.font = 'bold 18px Fira Code, monospace';
+      ctx.fillStyle = '#fff';
+      ctx.fillText('Press R to Restart', W/2, H/2+32);
+      ctx.textAlign = 'left';
+    }
+    // Boss defeated message
+    if (bossDefeated && !running) {
+      ctx.fillStyle = '#f7b731';
+      ctx.font = 'bold 22px Fira Code, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('Boss Defeated!', W/2, H/2+60);
+      ctx.textAlign = 'left';
+    }
+  }
+
+  function loop() {
+    if (running) {
+      update();
+      draw();
+      frame++;
+      requestAnimationFrame(loop);
+    } else {
+      draw();
+      // After a short delay, scroll to profile/hero section
+      setTimeout(scrollToProfile, 900);
+    }
+  }
+
+  // Restart
+  function restart() {
+    player.x = 40;
+    player.y = H / 2 - 16;
+    player.bullets = [];
+    player.cooldown = 0;
+    enemies.length = 0;
+    score = 0;
+    running = true;
+    frame = 0;
+    inBoss = false;
+    boss = null;
+    bossDefeated = false;
+    level = 1;
+    initStars();
+    loop();
+  }
+  window.addEventListener('keydown', e => {
+    if (!running && (e.key === 'r' || e.key === 'R')) {
+      restart();
+    }
+  });
+
+  // Focus canvas on click for keyboard controls
+  canvas.addEventListener('click', () => canvas.focus());
+
+  // Start game
+  loop();
+})();
   const el = document.getElementById('heroSubtitle');
   if (!el) return;
 

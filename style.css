@@ -58,6 +58,58 @@ body.light .nav.scrolled              { background: rgba(240,244,248,0.97); }
 html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--nav-h);
+
+/* ── SPACE IMPACT GAME ───────────────────────────── */
+.space-impact-game {
+  width: 100%;
+  background: var(--c-bg-alt, #0d2137);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2.5rem 0 1.5rem 0;
+  border-bottom: 2px solid var(--c-border);
+  min-height: 400px;
+}
+.space-impact-title {
+  color: var(--c-cyan);
+  font-family: var(--f-mono);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.03em;
+}
+#spaceImpactCanvas {
+  background: #111c2f;
+  border: 2px solid var(--c-cyan);
+  border-radius: 10px;
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.25);
+  margin-bottom: 0.75rem;
+  outline: none;
+  max-width: 95vw;
+  height: auto;
+  display: block;
+}
+.space-impact-controls {
+  color: var(--c-muted);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-family: var(--f-mono);
+}
+@media (max-width: 600px) {
+  .space-impact-game {
+    padding: 1.2rem 0 0.5rem 0;
+    min-height: 260px;
+  }
+  #spaceImpactCanvas {
+    width: 98vw;
+    height: 180px;
+    min-width: unset;
+    min-height: unset;
+  }
+  .space-impact-title {
+    font-size: 1.1rem;
+  }
+}
 }
 
 body {
