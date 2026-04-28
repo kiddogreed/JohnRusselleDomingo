@@ -11,10 +11,32 @@ A modern, single-page developer portfolio built with vanilla **HTML5 / CSS3 / Ja
 
 1. [Project Overview](#project-overview)
 2. [Features](#features)
+   - [Space Impact Mini Game](#space-impact-mini-game)
    - [Dark / Light Mode](#dark--light-mode)
    - [RGB Particle Effect on Hover](#rgb-particle-effect-on-hover)
    - [Auto-Shuffling Profile Photo](#auto-shuffling-profile-photo)
    - [GitHub Repository Showcase](#github-repository-showcase)
+### Space Impact Mini Game
+
+At the very top of the site, visitors are greeted with a fully playable **Space Impact-inspired mini game** built in vanilla JavaScript and Canvas. This game is a fun, interactive showcase of both coding and design skills.
+
+**Game features:**
+- Classic side-scrolling shooter gameplay (move, shoot, dodge)
+- Multiple enemy waves and a boss fight every level
+- Boss changes shape (rectangle → glowing circle) at level 2+
+- Level cycling: after defeating the boss, the game gets harder
+- Keyboard controls (arrow keys/WASD + space to shoot)
+- Game over auto-scrolls to your profile
+
+**Cosmic background details:**
+- Animated parallax starfield
+- Solar system: sun, orbiting earth, and multiple planets
+- Animated asteroid belt
+- Milky Way band (soft, subtle)
+- Swirling black hole (top right)
+- All background elements have reduced opacity for depth
+
+**Files involved:** `index.html` (section at top), `style.css` (game area styles), `script.js` (all game logic and rendering)
 3. [Tech Stack](#tech-stack)
 4. [Project Structure](#project-structure)
 5. [Sections](#sections)
@@ -134,13 +156,14 @@ See [Showcased Repositories](#showcased-repositories) for the full list.
 
 ---
 
+
 ## Project Structure
 
 ```
 JohnRusselleDomingo/
-├── index.html        # Single-page markup — all sections
-├── style.css         # All styles, theming, animations, responsive rules
-├── script.js         # All interactivity — theme, canvas, typing, nav, reveal
+├── index.html        # Single-page markup — all sections (includes Space Impact game section at top)
+├── style.css         # All styles, theming, animations, responsive rules (includes game area)
+├── script.js         # All interactivity — theme, canvas, typing, nav, reveal, and all game logic
 ├── 1000065235.png    # Personal photo (used on front face of flip card)
 └── README.md         # This file
 ```
